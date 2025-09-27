@@ -9,8 +9,10 @@ import { useState } from "react";
 import { NewAgentDialog } from "./componenets/new-agentdialog";
 import { useAgentFilters } from "../hooks/use-filter";
 import { DataPagination } from "./componenets/data-pagination";
+import { useRouter } from "next/navigation";
 
 export const AgentsView = () => {
+  const router = useRouter();
   const trpc = useTRPC();
   const [filters, setFilters] = useAgentFilters();
   
@@ -39,7 +41,8 @@ export const AgentsView = () => {
 
   return (
     <div className="space-y-4">
-      <DataTable data={data.items} columns={columns} />
+      <DataTable data={data.items} columns={columns}
+      onRowClick={(row) => router.push(`/agents/${row.id}`, { scroll: false })} />
       <DataPagination
         page={filters.page}
         totalPages={data.totalPages}
