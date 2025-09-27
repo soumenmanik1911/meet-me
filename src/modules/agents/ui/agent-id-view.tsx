@@ -1,25 +1,51 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { AgentIdViewHeader } from "./componenets/agent-id-view-headwe";
 import { GeneratedAvatar } from "@/components/genrated-avatar";
 import { Badge } from "@/components/ui/badge";
 import { VideoIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import {UpdateAgentDialog} from "./componenets/update-agent-dialog";
 interface  Props{
     agentId:string 
 };
 
 export const AgentIdView = ({agentId}:Props) => {
+
     const trpc = useTRPC();
+    const router = useRouter();
+    const queryClient = useQueryClient();
+    const [updateDialogOpen,setUpdateDialogOpen] = useState(false);
+
+
     const {data} = useSuspenseQuery(trpc.agents.getOne.queryOptions({id:agentId}));
+    const removeAgent = useMutation(
+        trpc.agents.remove.mutationOptions({
+            onSuccess: async () =>{
+                await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
+            
+            router.push("/agents");
+            },
+        
+
+        })
+    )
+   
     return(
         <div>
+            <UpdateAgentDialog
+            open={updateDialogOpen}
+            onOpenChange={setUpdateDialogOpen}
+            agent={data}
+            />
             <AgentIdViewHeader
             agentId={agentId}
             agentName={data.name}
-            onEdit ={() =>{}}
-            onRemove ={() =>{}}
+            onEdit={() => setUpdateDialogOpen(true)}
+            onRemove ={() => removeAgent .mutate({id:agentId})}
             />
             <div className=" bg-white rounded-lg border"
             >
