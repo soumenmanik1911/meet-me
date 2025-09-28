@@ -7,8 +7,10 @@ export const MeetingsView =() =>{
     const {data} =useQuery(trpc.meetings.getMany.queryOptions({}));
 
     return(
-        <div>
-            {JSON.stringify(data)}
+        <div className="w-full p-4 bg-white rounded-lg shadow-md">
+            <pre className="text-sm overflow-x-auto">
+                {JSON.stringify(data, null, 2)}
+            </pre>
         </div>
     );
 }
