@@ -13,19 +13,21 @@ export default function Layout({ children }: Props) {
         <NuqsAdapter>
         <SidebarProvider>
             <Sidebar>
+                <DashboardSidebar />
             </Sidebar>
             <SidebarInset>
-                <DashboardSidebar />
-                
-                <main>
+                <main className="flex-1 overflow-auto">
                     <DashboardNavbar/>
-                    {children}
+                    <div className="container mx-auto px-4 py-6 max-w-7xl">
+                        {children}
+                    </div>
                 </main>
             </SidebarInset>
         </SidebarProvider>
         </NuqsAdapter>
-       
-           
-        
+
+
+
+
     );
 }
